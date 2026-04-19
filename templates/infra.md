@@ -1,0 +1,5 @@
+- [ ] **Least Privilege IAM**: Any new IAM Role or Service Account policies specify exact ARNs; `*` resource bounds are heavily restricted.
+- [ ] **Public Exposure**: New S3 Buckets, EC2 instances, or DB Clusters explicitly disable public accessibility (`block_public_acls = true`, etc.).
+- [ ] **Encryption**: Data-at-rest encryption (KMS, SSE-S3) is enforced for new storage infrastructure.
+- [ ] **Secret Referencing**: State files or variables do not pass plaintext secrets. External secret managers (AWS Secrets Manager/Vault) are correctly linked.
+- [ ] **Network Lockdown**: Security Group egress and ingress rules strictly follow zero-trust routing (e.g. databases only accept traffic from backend subnets).

@@ -1,0 +1,5 @@
+- [ ] **XSS Prevention**: User-generated content is sanitized and never rendered using raw HTML tags (`dangerouslySetInnerHTML`) unless explicitly bounded.
+- [ ] **Local Storage Caution**: High-value tokens (refresh tokens) are not stored in raw localStorage—favor HttpOnly cookies if possible, or transient memory.
+- [ ] **Dependency Hygiene**: New `package.json` dependencies have been vetted against typosquatting or excessive permissions.
+- [ ] **External Links**: Use `rel="noopener noreferrer"` for any external link anchors (`<a>`).
+- [ ] **Exposure Reduction**: Confirm that internal admin API paths are not statically hardcoded into the public frontend bundle.

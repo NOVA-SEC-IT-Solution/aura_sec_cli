@@ -1,0 +1,60 @@
+{
+  "version": "1.0",
+  "roles": [
+    {
+      "id": "backend",
+      "display_name": "Backend Service",
+      "check_command": "cargo check --message-format=json",
+      "checklist_path": "templates/backend.md"
+    },
+    {
+      "id": "frontend",
+      "display_name": "Frontend Application",
+      "check_command": "npx tsc --noEmit",
+      "checklist_path": "templates/frontend.md"
+    },
+    {
+      "id": "infra",
+      "display_name": "Infrastructure (Terraform)",
+      "check_command": "terraform validate -json",
+      "checklist_path": "templates/infra.md"
+    }
+  ],
+  "secret_patterns": [
+    {
+      "name": "AWS Access Key",
+      "regex": "(?i)AKIA[0-9A-Z]{16}",
+      "severity": "critical"
+    },
+    {
+      "name": "RSA Private Key",
+      "regex": "-----BEGIN (RSA )?PRIVATE KEY-----",
+      "severity": "critical"
+    },
+    {
+      "name": "Generic Password/Token",
+      "regex": "(?i)(password|secret|token|api_key|apikey)[\\s:=]*[\"'][\\w\\-]{16,}[\"']",
+      "severity": "high"
+    },
+    {
+      "name": "GitHub Token",
+      "regex": "ghp_[a-zA-Z0-9]{36}",
+      "severity": "critical"
+    },
+    {
+      "name": "Slack Token",
+      "regex": "xox[baprs]-[0-9]+-[0-9]+-[a-zA-Z0-9]+",
+      "severity": "critical"
+    },
+    {
+      "name": "Stripe Secret Key",
+      "regex": "sk_live_[0-9a-zA-Z]{24}",
+      "severity": "critical"
+    },
+    {
+      "name": "Database Connection String",
+      "regex": "(?i)(postgres|mysql)://[^\\s]+:[^\\s]+@[^\\s]+",
+      "severity": "critical"
+    }
+  ]
+}
