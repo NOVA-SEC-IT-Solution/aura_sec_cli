@@ -4,21 +4,32 @@
     {
       "name": "Backend",
       "display_name": "Backend Service",
-      "markers": ["Cargo.toml", "go.mod", "pom.xml"],
+      "markers": [
+        "Cargo.toml",
+        "go.mod",
+        "pom.xml"
+      ],
       "quality_command": "cargo check --message-format=json",
       "checklist_path": "templates/backend.md"
     },
     {
       "name": "Frontend",
       "display_name": "Frontend Application",
-      "markers": ["package.json", "tsconfig.json"],
+      "markers": [
+        "package.json",
+        "tsconfig.json"
+      ],
       "quality_command": "npx tsc --noEmit",
       "checklist_path": "templates/frontend.md"
     },
     {
       "name": "Infrastructure",
       "display_name": "Infrastructure (Terraform)",
-      "markers": ["terraform.tf", "main.tf", "Dockerfile"],
+      "markers": [
+        "terraform.tf",
+        "main.tf",
+        "Dockerfile"
+      ],
       "quality_command": "terraform validate -json",
       "checklist_path": "templates/infra.md"
     }
@@ -59,5 +70,7 @@
       "regex": "(?i)(postgres|mysql)://[^\\s]+:[^\\s]+@[^\\s]+",
       "severity": "Critical"
     }
-  ]
+  ],
+  "ai_prompt": "you are a world-class security engineer and penetration tester. Your mission is to conduct a deep security analysis of the provided [ROLE] code. \n\nFocus on: Injections, Broken Access Control, Insecure Crypto, and Leaked Logic. \n\nFormat Requirements: \n- Return ONLY a raw JSON array of findings. \n- Each finding must have: \"file_path\", \"line_number\", \"message\", \"severity\" (High, Medium, or Low). \n- If no issues found, return []. \nNo conversational text, no markdown code block markers.",
+  "checklist_prompt": "Based on these git changes:\n```\n[DIFF]\n```\n\nAnd this existing security checklist:\n```\n[CHECKLIST]\n```\n\nSuggest highly-actionable, short, contextual security verification steps that a developer must strictly verify before merging. Format your output strictly as a Markdown list, one per line, with no introductory or wrapping text. Each item MUST start with '- '. Example: '- Ensure the rate limiter tracks IP addresses using X-Forwarded-For.'"
 }
