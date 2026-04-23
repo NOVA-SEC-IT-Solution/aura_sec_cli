@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+STATE_FILE="$ROOT/.git-aura/commit-editor-state"
+REAL_EDITOR_FILE="$ROOT/.git-aura/editor-real"
+COMMIT_FILE="${1:-}"
+
+if [ -n "$COMMIT_FILE" ] && [ -f "$STATE_FILE" ]; then
+    TARGET_FILE=$(cat "$STATE_FILE")
+    if [ "$TARGET_FILE" = "$COMMIT_FILE" ]; then
+        rm -f "$STATE_FILE"
+        exit 0
+    fi
+fi
+
+resolve_editor() {
+    if [ -f "$REAL_EDITOR_FILE" ]; then
+        cat "$REAL_EDITOR_FILE"
+        return 0
+    fi
+    if [ -n "${VISUAL:-}" ]; then
+        printf '%s\n' "$VISUAL"
+        return 0
+    fi
+    if [ -n "${EDITOR:-}" ]; then
+        printf '%s\n' "$EDITOR"
+        return 0
+    fi
+    printf '%s\n' vi
+}
+
+REAL_EDITOR=$(resolve_editor)
+if [ -z "$REAL_EDITOR" ]; then
+    exit 0
+fi
+
+eval "set -- $REAL_EDITOR \"\$@\""
+exec "$@"

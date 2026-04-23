@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# =============================================================================
+# AURA Secure CLI — Guardian Hook (prepare-commit-msg)
+# =============================================================================
+set -euo pipefail
+
+COMMIT_MSG_FILE="$1"
+COMMIT_SOURCE="${2:-}"
+SHA1="${3:-}"
+
+find_aura() {
+    if command -v aura-cli &>/dev/null; then
+        command -v aura-cli
+    elif root=$(git rev-parse --show-toplevel 2>/dev/null) && [ -x "$root/target/release/aura-cli" ]; then
+        echo "$root/target/release/aura-cli"
+    elif [ -x "$root/target/debug/aura-cli" ]; then
+        echo "$root/target/debug/aura-cli"
+    elif [ -x "$HOME/.cargo/bin/aura-cli" ]; then
+        echo "$HOME/.cargo/bin/aura-cli"
+    fi
+}
+
+AURA_BIN=$(find_aura)
+
+if [ -z "$AURA_BIN" ]; then exit 0; fi
+
+"$AURA_BIN" hook-prepare-commit-msg \
+    --commit-msg-file "$COMMIT_MSG_FILE" \
+    ${COMMIT_SOURCE:+--commit-source "$COMMIT_SOURCE"} \
+    ${SHA1:+--sha1 "$SHA1"}

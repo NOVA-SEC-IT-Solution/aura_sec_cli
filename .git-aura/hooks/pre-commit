@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# =============================================================================
+# AURA Secure CLI — Guardian Hook (pre-commit)
+# =============================================================================
+set -euo pipefail
+
+find_aura() {
+    # 1. System PATH
+    if command -v aura-cli &>/dev/null; then
+        command -v aura-cli
+        return 0
+    fi
+    
+    # 2. Local project build
+    local root; root=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
+    if [ -x "$root/target/release/aura-cli" ]; then
+        echo "$root/target/release/aura-cli"
+        return 0
+    fi
+    if [ -x "$root/target/debug/aura-cli" ]; then
+        echo "$root/target/debug/aura-cli"
+        return 0
+    fi
+    
+    # 3. Cargo global
+    if [ -x "$HOME/.cargo/bin/aura-cli" ]; then
+        echo "$HOME/.cargo/bin/aura-cli"
+        return 0
+    fi
+    
+    return 1
+}
+
+AURA_BIN=$(find_aura)
+
+if [ -z "$AURA_BIN" ]; then
+    echo "⚠️  AURA Secure CLI not found in PATH or target/. Skipping security checks."
+    exit 0
+fi
+
+"$AURA_BIN" hook-pre-commit
